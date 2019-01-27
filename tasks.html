@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Joe Cashmore">
+  <meta name="description" content="A Basic Task List App / With LocalStorage">
+  <title>Your To-Do list</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="getDate(), getTasks()">
+  <!-- Navbar -->
+  <header class="nav">
+    <div class="nav-item">
+      // Welcome
+    </div>
+    <div id="getTime" class="nav-item"></div>
+    <div id="addNew" class="nav-item"></div>
+    <div id="clearAll" class="nav-item">
+      Clear Tasks_
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="newTask">
+    <form id="myForm">
+      <div class="input">
+
+        <input id="taskName" type="text" name="" value="" placeholder="Task Name" required>
+        <pre style="margin:8% 20%;">//   ...   //   Enter a Task</pre>
+      </div>
+      <div class=" input">
+
+        <input id="taskDesc" type="text" name="" value="" placeholder="Description" required>
+        <pre style="margin: 8% 20%;">//   ...   //   Enter a Description</pre>
+      </div>
+      <div class="input">
+        <button id="addANewTask" type="submit" name="button">Add</button>
+      </div>
+    </form>
+  </div>
+  <!-- Image -->
+  <div class="underImage">Sourced From Unplash</div>
+  <!-- Task List -->
+  <div id="tasklist" class="tasklist">
+    <div class="taskhead">
+      Tasks for Today;
+    </div>
+    <div id="taskresults"></div>
+  </div>
+
+
+  <script src="scripts.js" charset="utf-8"></script>
+</body>
+
+</html>

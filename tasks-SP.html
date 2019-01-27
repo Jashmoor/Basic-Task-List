@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Joe Cashmore">
+  <meta name="description" content="A Basic Task List App / With LocalStorage">
+  <title>Your To-Do list</title>
+  <style media="screen">
+    @import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-size: 10px;
+    }
+
+    body {
+      font-family: 'Amatic SC', monospace, sans-serif;
+      background-color: #323232;
+      color: white;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* classes */
+    .nav {
+      width: 100%;
+      padding: 0 1.1rem 0 1.1rem;
+      display: inline-grid;
+      grid-template-columns: 3fr 3fr 2fr 2fr;
+      grid-gap: 10px;
+      padding-top: 1.3rem;
+      padding-bottom: 2.3rem;
+      border-bottom: 1px dashed white;
+    }
+
+    .nav-item {
+      text-align: center;
+      z-index: 4;
+      letter-spacing: 0.4rem;
+      font-size: 2.2rem;
+      border-radius: 10px;
+    }
+
+    #getTime {
+      font-size: 2.5rem;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    #addNew:hover {
+      cursor: pointer;
+      transition: all 0.4s ease;
+      background-color: #f3f3f3;
+      color: #323232;
+    }
+
+    #clearAll:hover {
+      cursor: pointer;
+      transition: all 0.4s ease;
+      background-color: #f3f3f3;
+      color: #323232;
+    }
+
+    .underImage {
+      z-index: 2;
+      background-image: url(https://images.unsplash.com/photo-1547250841-649bb087aab9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80);
+      position: absolute;
+      top: 20%;
+      left: 60%;
+      width: 334px;
+      height: 501px;
+    }
+
+    .tasklist {
+      position: absolute;
+      top: 20%;
+      left: 10%;
+      width: 40%;
+      border: 2px solid white;
+      border-radius: 16px;
+    }
+
+    .taskhead {
+      font-size: 2.5rem;
+      font-weight: bold;
+      letter-spacing: 1.1rem;
+      margin: 1.1rem 0 2.5rem 0.8rem;
+    }
+
+    .task-item {
+      cursor: pointer;
+      font-size: 2.4rem;
+      margin-left: 1.4rem;
+      transition: all 0.5s ease;
+    }
+
+    .newTask {
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: rgba(0, 0, 0, 0.9);
+      transition: all 0.4s ease;
+      height: 100%;
+      width: 0%;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .taskdisplay {
+      height: 100%;
+      width: 45%;
+      transition: all 0.4s ease;
+    }
+
+    .inputHead {
+      z-index: 3;
+      float: left;
+    }
+
+    input, button {
+      width: 100%;
+      height: 4rem;
+      font-size: 2.5rem;
+      margin: 15vh 0 0 50%;
+    }
+  </style>
+</head>
+
+<body onload="getDate(), getTasks()">
+  <!-- Navbar -->
+  <header class="nav">
+    <div class="nav-item">
+      // Welcome
+    </div>
+    <div id="getTime" class="nav-item"></div>
+    <div id="addNew" class="nav-item"></div>
+    <div id="clearAll" class="nav-item">
+      Clear Tasks_
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="newTask">
+    <form id="myForm">
+      <div class="input">
+
+        <input id="taskName" type="text" name="" value="" placeholder="Task Name" required>
+        <pre style="margin:8% 20%;">//   ...   //   Enter a Task</pre>
+      </div>
+      <div class=" input">
+
+        <input id="taskDesc" type="text" name="" value="" placeholder="Description" required>
+        <pre style="margin: 8% 20%;">//   ...   //   Enter a Description</pre>
+      </div>
+      <div class="input">
+        <button id="addANewTask" type="submit" name="button">Add</button>
+      </div>
+    </form>
+  </div>
+  <!-- Image -->
+  <div class="underImage">Sourced From Unplash</div>
+  <!-- Task List -->
+  <div id="tasklist" class="tasklist">
+    <div class="taskhead">
+      Tasks for Today;
+    </div>
+    <div id="taskresults"></div>
+  </div>
+
+
+  <script>
+    // Global Constants and Variables //
+    const time = setInterval(getDate, 1000);
+    const toggleDisp = document.querySelector('.newTask');
+    const taskResult = document.getElementById('taskresults');
+    const newTask = document.getElementById('addNew');
+    let displayCheck = false;
+    let taskArray = localStorage.getItem('task') ? JSON.parse(localStorage.getItem('task')) : [];
+    let taskList = JSON.parse(localStorage.getItem('task'));
+
+    // Event Listeners //
+    newTask.addEventListener('click', displayAdd);
+    newTask.innerHTML = "New Task_";
+    document.getElementById('addANewTask').addEventListener('click', saveTask);
+    document.getElementById('clearAll').addEventListener('click', clearStore);
+
+    // Functions //
+    function getDate() {
+      let date = new Date();
+      let now = date.toLocaleTimeString();
+      document.getElementById('getTime').innerHTML = now;
+    };
+
+    function displayAdd() {
+      if (!displayCheck) {
+        newTask.innerHTML = "Close_";
+      } else {
+        newTask.innerHTML = "New Task_";
+      };
+      toggleDisp.classList.toggle('taskdisplay');
+      displayCheck = (!displayCheck);
+    };
+
+    function saveTask(e) {
+      e.preventDefault();
+      let taskName = document.getElementById('taskName').value;
+      let taskDesc = document.getElementById('taskDesc').value;
+      let tasks = {
+        name: taskName,
+        desc: taskDesc
+      };
+      taskArray.push(tasks);
+      localStorage.setItem('task', JSON.stringify(taskArray));
+      taskList = JSON.parse(localStorage.getItem('task'));
+      getTasks();
+      document.getElementById('taskDesc').value = "";
+      document.getElementById('taskName').value = "";
+    };
+
+    function getTasks() {
+      if (localStorage.length == 0) {
+        taskResult.innerHTML = '<div class="task-item">No Tasks</div>'
+      } else {
+        while (taskResult.firstChild) {
+          taskResult.removeChild(taskResult.firstChild);
+        }
+        for (let i = 0; i < taskList.length; i++) {
+          let div = document.createElement('div');
+          let div2 = document.createElement('div');
+          div.textContent = taskList[i].name;
+          div2.textContent = "--  " + taskList[i].desc;
+          div.classList.add('task-item');
+          div2.classList.add('task-item');
+          div.addEventListener('click', complete);
+          taskResult.appendChild(div);
+          div.appendChild(div2);
+        }
+      }
+    };
+
+    function complete() {
+      this.remove();
+      if (taskResult.childElementCount == 0) {
+        clearStore();
+      }
+    };
+
+    function clearStore() {
+      localStorage.clear();
+      getTasks();
+    };
+  </script>
+</body>
+
+</html>
