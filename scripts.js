@@ -9,9 +9,11 @@ let taskList = JSON.parse(localStorage.getItem('task'));
 
 // Event Listeners //
 newTask.addEventListener('click', displayAdd);
-newTask.innerHTML = "New Task_";
 document.getElementById('addANewTask').addEventListener('click', saveTask);
 document.getElementById('clearAll').addEventListener('click', clearStore);
+
+//Page Set-Up
+newTask.innerHTML = "New Task_";
 
 // Functions //
 function getDate(){
@@ -21,14 +23,11 @@ function getDate(){
 };
 
 function displayAdd(){
-  if (!displayCheck){
-    newTask.innerHTML = "Close_";
-  } else {
-    newTask.innerHTML = "New Task_";
-  };
+  newTask.innerHTML = (!displayCheck ? "Close_" : "NewTask_");
   toggleDisp.classList.toggle('taskdisplay');
   displayCheck = (!displayCheck);
 };
+
 
 function saveTask(e){
   e.preventDefault();
